@@ -16,6 +16,36 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 let bucket; // GridFS: donde se guardan las fotos dentro de MongoDB
 
+const allowedOrigins = new Set(
+  (process.env.CORS_ORIGINS || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+);
+
+app.use((req, res, next) => {
+  const origin = req.get('Origin');
+  if (!origin) return next();
+
+  let originHost;
+  try {
+    originHost = new URL(origin).host;
+  } catch {
+    return res.status(403).json({ error: 'Origen no autorizado.' });
+  }
+
+  if (originHost !== req.get('host') && !allowedOrigins.has(origin)) {
+    return res.status(403).json({ error: 'Origen no autorizado.' });
+  }
+
+  res.set('Access-Control-Allow-Origin', origin);
+  res.set('Vary', 'Origin');
+  res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type, x-admin-key');
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
+
 // Subida de imágenes en memoria (máx. 10 MB por foto, solo imágenes)
 const upload = multer({
   storage: multer.memoryStorage(),
