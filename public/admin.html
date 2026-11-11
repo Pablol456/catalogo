@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0c16" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Administrar colección</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%224%22 fill=%22%236366f1%22/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body class="admin">
+  <header class="topbar">
+    <a href="/" class="logo"><span class="logo-dot"></span>Catálogo</a>
+    <nav class="crumbs"><a href="/">Catálogo</a><i data-icon="chevron-right"></i><b>Administrar</b></nav>
+    <button type="button" class="btn small" id="logout" hidden><i data-icon="logout"></i> Salir</button>
+  </header>
+
+  <!-- ===== Acceso con contraseña ===== -->
+  <div id="lock" class="lock">
+    <form id="lockForm" class="lock-card" autocomplete="off">
+      <div class="lock-icon"><i data-icon="lock"></i></div>
+      <h1>Panel de administración</h1>
+      <p class="muted">Escribe la contraseña para continuar.</p>
+      <input type="password" id="lockPass" inputmode="numeric" autocomplete="current-password" placeholder="Contraseña" aria-label="Contraseña" required />
+      <button class="btn primary" type="submit" id="lockBtn">Entrar</button>
+      <p class="lock-msg" id="lockMsg" role="alert"></p>
+      <a href="/" class="back"><i data-icon="arrow-left"></i> Volver al catálogo</a>
+    </form>
+  </div>
+
+  <main class="admin-main" hidden>
+    <div class="admin-tabs seg">
+      <button data-tab="games" class="on"><i data-icon="disc"></i> Juegos</button>
+      <button data-tab="consoles"><i data-icon="gamepad"></i> Consolas</button>
+    </div>
+
+    <!-- ===== JUEGOS ===== -->
+    <section data-section="games" class="admin-grid">
+      <aside class="list-col">
+        <div class="list-tools">
+          <select id="gFilter"></select>
+          <input type="search" id="gSearch" placeholder="Buscar…" />
+          <button class="btn primary small" id="gNew"><i data-icon="plus"></i> Nuevo juego</button>
+        </div>
+        <ul class="item-list" id="gList"></ul>
+      </aside>
+
+      <form id="gForm" class="form-col" autocomplete="off">
+        <div class="form-head">
+          <h2 id="gFormTitle">Nuevo juego</h2>
+          <button type="button" class="btn small danger" id="gDelete" hidden><i data-icon="trash"></i> Borrar</button>
+        </div>
+
+        <fieldset>
+          <legend>1 · Datos del juego</legend>
+          <div class="row">
+            <label class="grow">Título *<input name="title" required /></label>
+            <label>Consola *<select name="console" required></select></label>
+          </div>
+          <div class="row">
+            <label>Año<input name="year" type="number" min="1970" max="2100" /></label>
+            <label>Región
+              <select name="region"><option>PAL</option><option>NTSC-U</option><option>NTSC-J</option><option>Otra</option></select>
+            </label>
+            <label>Jugadores<input name="players" placeholder="1-4" /></label>
+          </div>
+          <div class="row">
+            <label class="grow">Género<input name="genre" list="genres" /></label>
+            <label class="grow">Desarrolladora<input name="developer" /></label>
+            <label class="grow">Editora<input name="publisher" /></label>
+          </div>
+          <datalist id="genres"><option>Acción</option><option>Aventura</option><option>Plataformas</option><option>RPG</option><option>Deportes</option><option>Conducción</option><option>Lucha</option><option>Shooter</option><option>Estrategia</option><option>Puzle</option><option>Party</option><option>Simulación</option><option>Survival horror</option></datalist>
+          <label>Descripción<textarea name="description" rows="2"></textarea></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>2 · Estado de tu copia</legend>
+          <p class="help">Elige el estado de cada pieza. Si no la tienes, marca «No incluido».</p>
+          <div class="cond-grid">
+            <div><label><span><i data-icon="box"></i> Caja</span><select name="condition.box" class="cond-sel"></select></label><input name="condition.boxNotes" placeholder="Notas: esquinas, rayones…" /></div>
+            <div><label><span id="mediaName"><i data-icon="disc"></i> Disco (frente)</span><select name="condition.media" class="cond-sel"></select></label><input name="condition.mediaNotes" placeholder="Notas: serigrafía, etiqueta…" /></div>
+            <div><label><span id="mediaBackName"><i data-icon="flip"></i> Disco (por detrás)</span><select name="condition.mediaBack" class="cond-sel-opt"></select></label><input name="condition.mediaBackNotes" id="mediaBackNotes" placeholder="Notas: rayones en la cara de datos…" /></div>
+            <div><label><span><i data-icon="manual"></i> Manual</span><select name="condition.manual" class="cond-sel"></select></label><input name="condition.manualNotes" placeholder="Notas: páginas, manchas…" /></div>
+          </div>
+          <label>Extras incluidos (separados por comas)<input name="extras" placeholder="Póster, Mapa, Tarjeta de registro" /></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>3 · Imágenes de la caja 3D</legend>
+          <p class="help">Escaneos o fotos de frente de cada parte. Se usan para «vestir» la caja en 3D.</p>
+          <div class="img-grid" id="boxImgs"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>4 · Fotos reales</legend>
+          <p class="help">Fotos de tu copia: estado de la caja, el disco por ambas caras, defectos… Puedes subir varias a la vez.</p>
+          <label class="btn file-btn"><i data-icon="camera"></i> Añadir fotos (cámara o galería)<input type="file" name="photos" accept="image/*" multiple id="photoInput" /></label>
+          <div class="photo-grid" id="photoGrid"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>5 · Adquisición y notas</legend>
+          <div class="row">
+            <label>Fecha<input name="acquired.date" type="date" /></label>
+            <label>Precio (pesos argentinos)<input name="acquired.price" type="number" step="any" min="0" placeholder="$ 0" /></label>
+            <label class="grow">Dónde<input name="acquired.place" placeholder="Tienda, mercadillo, regalo…" /></label>
+          </div>
+          <label>Notas<textarea name="notes" rows="2"></textarea></label>
+          <label class="check"><input type="checkbox" name="favorite" /> <i data-icon="star"></i> Marcar como favorito</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>6 · Venta</legend>
+          <label class="check sold-check"><input type="checkbox" name="sold" id="soldCheck" /> <i data-icon="tag"></i> Marcar como vendido</label>
+          <p class="help">Un juego vendido sigue en el catálogo, en la sección «Vendidos», pero ya no cuenta en el resumen de la colección.</p>
+          <div class="row" id="saleFields" hidden>
+            <label>Fecha de venta<input name="sale.date" type="date" /></label>
+            <label>Precio de venta (pesos argentinos)<input name="sale.price" type="number" step="any" min="0" placeholder="$ 0" /></label>
+          </div>
+        </fieldset>
+
+        <div class="form-actions">
+          <button type="submit" class="btn primary"><i data-icon="save"></i> Guardar juego</button>
+          <span class="form-msg" id="gMsg"></span>
+        </div>
+      </form>
+
+      <aside class="preview-col">
+        <h3>Vista previa</h3>
+        <div class="stage small-stage" id="preview"></div>
+        <div class="stage-controls">
+          <button type="button" class="btn small" id="pvOpen">Abrir / cerrar</button>
+          <button type="button" class="btn small" id="pvTurn">Girar</button>
+          <button type="button" class="btn small" id="pvFlip"><i data-icon="flip"></i> Dar vuelta</button>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ===== CONSOLAS ===== -->
+    <section data-section="consoles" class="admin-grid two" hidden>
+      <aside class="list-col">
+        <div class="list-tools"><button class="btn primary small" id="cNew"><i data-icon="plus"></i> Nueva consola</button></div>
+        <ul class="item-list" id="cList"></ul>
+      </aside>
+      <form id="cForm" class="form-col" autocomplete="off">
+        <div class="form-head">
+          <h2 id="cFormTitle">Nueva consola</h2>
+          <button type="button" class="btn small danger" id="cDelete" hidden><i data-icon="trash"></i> Borrar</button>
+        </div>
+        <fieldset>
+          <legend>Datos</legend>
+          <div class="row">
+            <label class="grow">Nombre *<input name="name" required /></label>
+            <label class="grow">Fabricante<input name="manufacturer" /></label>
+          </div>
+          <div class="row">
+            <label>Año<input name="year" type="number" /></label>
+            <label>Generación<input name="generation" type="number" min="1" max="12" /></label>
+            <label>Soporte<select name="mediaType"><option value="disco">Disco</option><option value="cartucho">Cartucho</option></select></label>
+          </div>
+          <label>Tipo de caja<select name="caseType" id="caseTypeSel"></select></label>
+          <div class="row">
+            <label>Color de la consola<input name="color" type="color" value="#3b82f6" /></label>
+            <label>Color del plástico de la caja<input name="caseColor" type="color" value="#111111" /></label>
+          </div>
+          <label>Foto de la consola<input type="file" name="image" accept="image/*" /></label>
+          <div id="cImgPreview"></div>
+        </fieldset>
+        <div class="form-actions">
+          <button type="submit" class="btn primary"><i data-icon="save"></i> Guardar consola</button>
+          <span class="form-msg" id="cMsg"></span>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" hidden></div>
+  <script src="/js/shared.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

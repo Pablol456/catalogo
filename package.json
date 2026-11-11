@@ -1,0 +1,19 @@
+{
+  "name": "Catálogo-videojuegos",
+  "version": "1.0.0",
+  "description": "Catálogo didáctico de videojuegos con cajas 3D y MongoDB",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node seed.js",
+    "seed:demo": "node seed.js --demo"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "mongoose": "^9.12.1",
+    "multer": "^2.5.0"
+  }
+}
